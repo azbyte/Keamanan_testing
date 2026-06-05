@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Singkat Pengembangan Aman</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --code-bg: #e8eaed;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        nav {
+            background-color: var(--secondary-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        nav ul li a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            font-weight: bold;
+            position: relative;
+        }
+
+        /* Penanda garis putih untuk menu yang aktif */
+        nav ul li a.active::after {
+            content: "";
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 8px;
+            height: 2px;
+            background: #ffffff;
+            border-radius: 2px;
+            opacity: 1;
+        }
+
+        nav ul li a:hover {
+            background-color: #2980b9;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        section {
+            background: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            scroll-margin-top: 60px;
+        }
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            color: #2980b9;
+        }
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            color: #c0392b;
+        }
+        .tip-box {
+            background-color: #eafaf1;
+            border-left: 4px solid #2ecc71;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        ul.checklist li {
+            margin-bottom: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Panduan Singkat Pengembangan Aman</h1>
+        <p>Referensi praktis untuk tim developer dalam membangun perangkat lunak yang aman dan andal.</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#checklist">Security Checklist</a></li>
+            <li><a href="#testing">Testing Strategy</a></li>
+            <li><a href="#best-practices">Best Practices</a></li>
+            <li><a href="#vulnerabilities">Common Vulnerabilities</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        
+        <section id="checklist">
+            <h2>1. Security Checklist (10 Poin Utama)</h2>
+            <p>Pastikan 10 poin ini selalu dicek sebelum aplikasi dirilis ke tahap produksi:</p>
+            <ul class="checklist">
+                <li>✅ <strong>Validasi Input:</strong> Selalu validasi data yang masuk dari pengguna (panjang, format, tipe) di sisi server, bukan hanya di sisi klien.</li>
+                <li>✅ <strong>Sanitasi Output:</strong> Bersihkan data sebelum ditampilkan ke layar untuk mencegah eksekusi skrip berbahaya.</li>
+                <li>✅ <strong>Manajemen Rahasia:</strong> Jangan pernah menyimpan API Key, password, atau token di dalam kode (hardcode). Gunakan file <code>.env</code>.</li>
+                <li>✅ <strong>Enkripsi Data Sensitif:</strong> Gunakan algoritma hashing yang kuat (misal: <code>bcrypt</code>) untuk menyimpan password. Jangan simpan password dalam plain text.</li>
+                <li>✅ <strong>Koneksi Aman:</strong> Selalu gunakan HTTPS/TLS untuk mengenkripsi data yang berpindah antara klien dan server.</li>
+                <li>✅ <strong>Prinsip Hak Akses Minimal:</strong> Berikan akses atau izin seminimal mungkin yang diperlukan oleh sistem atau pengguna untuk menjalankan fungsinya.</li>
+                <li>✅ <strong>Manajemen Sesi Aman:</strong> Gunakan token yang aman (seperti JWT) dan atur cookies dengan flag <code>HttpOnly</code> dan <code>Secure</code>.</li>
+                <li>✅ <strong>Pembaruan Dependensi:</strong> Rutin perbarui library atau framework (seperti package dari npm/pip) untuk menambal celah keamanan (patching).</li>
+                <li>✅ <strong>Rate Limiting:</strong> Batasi jumlah permintaan dari satu IP dalam waktu tertentu untuk mencegah serangan Brute Force dan DDoS skala kecil.</li>
+                <li>✅ <strong>Logging Tanpa Data Sensitif:</strong> Catat (log) aktivitas error atau akses, tetapi jangan pernah me-log data sensitif seperti password atau nomor kartu kredit.</li>
+            </ul>
+        </section>
+
+        <section id="testing">
+            <h2>2. Testing Strategy (Aplikasi Web Sederhana)</h2>
+            <p>Rencana pengujian untuk aplikasi web (misalnya: Sistem Toko Online Sederhana dengan 3-tier architecture):</p>
+            
+            <table>
+                <tr>
+                    <th>Tahapan Testing</th>
+                    <th>Fokus Pengujian</th>
+                    <th>Contoh Konkret</th>
+                </tr>
+                <tr>
+                    <td><strong>1. Unit Testing</strong></td>
+                    <td>Menguji fungsi-fungsi kecil secara terisolasi.</td>
+                    <td>Memastikan fungsi <code>hitungTotalHarga(harga, diskon)</code> mengembalikan nilai matematis yang benar.</td>
+                </tr>
+                <tr>
+                    <td><strong>2. Integration Testing</strong></td>
+                    <td>Menguji komunikasi antar modul/layanan.</td>
+                    <td>Mengecek apakah API Gateway berhasil mengirim data produk ke Backend dan menyimpannya di Database.</td>
+                </tr>
+                <tr>
+                    <td><strong>3. System/E2E Testing</strong></td>
+                    <td>Menguji alur sistem secara keseluruhan dari sudut pandang user.</td>
+                    <td>Simulasi: User Login -> Tambah barang ke keranjang -> Checkout -> Berhasil.</td>
+                </tr>
+                <tr>
+                    <td><strong>4. Security Testing</strong></td>
+                    <td>Mencari celah keamanan sebelum rilis.</td>
+                    <td>Mencoba memasukkan skrip <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> ke dalam form komentar untuk melihat apakah aplikasi kebal XSS.</td>
+                </tr>
+            </table>
+
+            <div class="tip-box">
+                <strong>💡 Tips Praktis:</strong> Otomatiskan Unit dan Integration Testing menggunakan CI/CD pipeline (seperti GitHub Actions) agar kode selalu diuji setiap kali ada <i>commit</i> baru.
+            </div>
+        </section>
+
+        <section id="best-practices">
+            <h2>3. Best Practices (Kode Aman & Reliable)</h2>
+            <ol>
+                <li><strong>Clean Code & Modularitas:</strong> Tulis fungsi yang hanya melakukan satu tugas (Single Responsibility). Ini memudahkan pencarian bug dan review kode.</li>
+                <li><strong>Gunakan Version Control (Git) dengan Benar:</strong> Selalu buat <i>branch</i> baru untuk setiap fitur atau perbaikan. Jangan langsung melakukan <i>commit</i> ke branch <code>main</code>.</li>
+                <li><strong>Terapkan DRY (Don't Repeat Yourself):</strong> Hindari menulis kode yang sama berulang kali. Jika ada logika berulang, jadikan sebuah fungsi atau kelas yang dapat dipanggil kembali.</li>
+                <li><strong>Graceful Error Handling:</strong> Tangani error dengan elegan. Tampilkan pesan yang ramah bagi pengguna, dan sembunyikan jejak error (<i>stack trace</i>) agar tidak dimanfaatkan oleh peretas.</li>
+                <li><strong>Peer Code Review:</strong> Sebelum menggabungkan (<i>merge</i>) kode, pastikan ada developer lain yang mereview untuk menemukan kesalahan logika atau celah keamanan yang terlewat.</li>
+            </ol>
+        </section>
+
+        <section id="vulnerabilities">
+            <h2>4. Common Vulnerabilities (3 Kerentanan Umum)</h2>
+            <p>Berikut adalah 3 celah keamanan yang paling sering ditemukan menurut standar OWASP beserta cara mencegahnya:</p>
+
+            <h3>1. SQL Injection (SQLi)</h3>
+            <p><strong>Deskripsi:</strong> Penyerang menyisipkan perintah SQL berbahaya ke dalam input form untuk memanipulasi atau mencuri data dari database.</p>
+            <p><strong>Contoh Serangan:</strong> Input username diisi dengan <code>admin' OR '1'='1</code>.</p>
+            <p><strong>Pencegahan:</strong> Selalu gunakan <i>Parameterized Queries</i> atau ORM (Object-Relational Mapping).<br>
+            <em>Contoh (Python):</em> Jangan gunakan <code>f"SELECT * FROM users WHERE nama='{input}'"</code>. Gunakan parameter: <code>cursor.execute("SELECT * FROM users WHERE nama=?", (input,))</code>.</p>
+
+            <h3>2. Cross-Site Scripting (XSS)</h3>
+            <p><strong>Deskripsi:</strong> Penyerang menyuntikkan skrip berbahaya (biasanya JavaScript) ke dalam halaman web yang dilihat oleh pengguna lain untuk mencuri sesi (cookies).</p>
+            <p><strong>Pencegahan:</strong> Lakukan <i>Output Encoding/Escaping</i> sebelum menampilkan data dari database ke HTML. Gunakan library template bawaan framework (seperti Jinja2 atau React) yang secara otomatis melakukan escape pada variabel.</p>
+
+            <h3>3. Broken Authentication</h3>
+            <p><strong>Deskripsi:</strong> Celah pada mekanisme login dan manajemen sesi yang memungkinkan penyerang mengambil alih akun pengguna (misal: menebak password default, atau mencuri ID sesi).</p>
+            <p><strong>Pencegahan:</strong> 
+                <ul>
+                    <li>Terapkan kebijakan password yang kuat (minimal 8 karakter, kombinasi huruf & angka).</li>
+                    <li>Gunakan Multi-Factor Authentication (MFA).</li>
+                    <li>Hancurkan sesi (session destroy) secara otomatis saat user <i>logout</i> atau setelah periode tidak aktif (timeout).</li>
+                </ul>
+            </p>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>Dokumen ini disiapkan sebagai Panduan Keamanan dan Testing untuk Pengembangan Perangkat Lunak.</p>
+    </footer>
+
+    <script>
+        // IntersectionObserver untuk memberi class 'active' pada menu navbar sesuai section yang sedang terlihat
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = Array.from(document.querySelectorAll('nav ul li a'));
+            const sectionIds = navLinks
+                .map(a => a.getAttribute('href')?.replace('#', ''))
+                .filter(Boolean);
+
+            const sections = sectionIds
+                .map(id => document.getElementById(id))
+                .filter(Boolean);
+
+            if (sections.length === 0) return;
+
+            function setActive(id) {
+                navLinks.forEach(a => {
+                    const linkId = a.getAttribute('href')?.replace('#', '');
+                    if (linkId === id) a.classList.add('active');
+                    else a.classList.remove('active');
+                });
+            }
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    // Ambil section yang paling terlihat (intersectionRatio terbesar)
+                    const visible = entries
+                        .filter(e => e.isIntersecting)
+                        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+                    if (!visible) return;
+                    setActive(visible.target.id);
+                },
+                {
+                    root: null,
+                    // Aktifkan saat section mulai masuk area viewport tengah
+                    rootMargin: '-40% 0px -50% 0px',
+                    threshold: [0, 0.1, 0.25, 0.5, 0.75, 1]
+                }
+            );
+
+            sections.forEach(section => observer.observe(section));
+
+            // Default: cari section yang paling sesuai dengan posisi scroll saat pertama kali load
+            const initial = sections
+                .map(s => ({ id: s.id, top: s.getBoundingClientRect().top }))
+                .filter(x => x.top < window.innerHeight)
+                .sort((a, b) => Math.abs(a.top) - Math.abs(b.top))[0];
+            if (initial) setActive(initial.id);
+        });
+    </script>
+
+</body>
+</html>
